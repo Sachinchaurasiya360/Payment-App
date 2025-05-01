@@ -24,6 +24,19 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
   },
+  FirstName:{
+    type:String,
+    required:true,
+  },
+  LastName:{
+    type:String,
+    required:true,
+  },
+  PhoneNo:{
+    type:Number,
+    required:true,
+  },
+  
 });
 
 const user = mongoose.model("user", userSchema);
