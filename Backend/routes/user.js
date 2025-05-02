@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const zod = require("zod");
 const { string, number } = require("zod");
-const { user } = require("../db");
+const { user, Account } = require("../db");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -13,7 +13,6 @@ const { authMiddleware } = require("../middleware");
 
 router.post("/signup", async (req, res) => {
   const { username, password, FirstName, LastName, PhoneNo } = req.body;
-  console.log("Request body:", req.body);
   const signupBody = zod.object({
     username: zod.string().email(),
     password: zod.string().min(8),
@@ -48,6 +47,10 @@ router.post("/signup", async (req, res) => {
     PhoneNo,
   });
 
+  await Account.create({
+    userId: createUser._id,
+    balance: 1 + Math.random() * 10000,
+  });
   const token = jwt.sign(
     { userId: createUser._id },
     process.env.JWT_SECRET_KEY,
