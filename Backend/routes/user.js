@@ -10,24 +10,32 @@ const app = express();
 app.use(express.json());
 const bcrypt = require("bcrypt");
 const { authMiddleware } = require("../middleware");
+const cors = require("cors");
+app.use(express.json());
+
+app.use(
+  cors({
+    origin: "*", 
+  })
+);
 
 router.post("/signup", async (req, res) => {
   const { username, password, FirstName, LastName, PhoneNo } = req.body;
   const signupBody = zod.object({
     username: zod.string().email(),
     password: zod.string().min(8),
-    FirstName: string().min(1),
-    LastName: string().min(1),
-    PhoneNo: zod.number().min(1000000000).max(9999999999),
+    FirstName: zod.string().min(1),
+    LastName: zod.string().min(1),
+    PhoneNo: zod.string().min(8),
   });
-
   const parsed = signupBody.safeParse(req.body);
 
   if (!parsed.success) {
     return res.status(411).json({
-      message: "Invalid Inputs hai bhai",
+      message: "You are sending invalid input",
     });
   }
+console.log("aah again i got hit")
 
   const existingUser = await user.findOne({ username });
 
@@ -118,5 +126,4 @@ router.put("/profile", authMiddleware, async (req, res) => {
     message: "Updated successfully",
   });
 });
-
 module.exports = router;
